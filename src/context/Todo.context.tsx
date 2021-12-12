@@ -99,7 +99,7 @@ function TodoProvider(props: any) {
         console.error(err);
         onError(err);
       });
-  }, []);
+  });
 
   const deleteTodo = (id: string, options?: IOptions) => {
     loading();

@@ -1,8 +1,8 @@
 import { createContext, useReducer, useContext, useLayoutEffect, useCallback } from "react";
 import { axiosInstance } from "config/axios.config";
 import { ITodo, ITodoForm, IUpdateTodoForm } from "interface/Todo.interface";
-import { useAuth } from 'context/Auth.context';
-import { HttpStatusCode } from 'utils/HttpStatusCode.enum';
+import { useAuth } from "context/Auth.context";
+import { HttpStatusCode } from "utils/HttpStatusCode.enum";
 
 interface PayloadProps {
   todos?: Array<ITodo>;
@@ -68,19 +68,18 @@ function TodoProvider(props: any) {
   };
 
   const onError = useCallback((err: any) => {
+    console.error(err.response);
     dispatch({
       type: "ERROR",
       payload: {
         loading: false,
-        error: err?.response?.data
-          ? err.response.data
-          : "Something Went Wrong",
+        error: err?.response?.data ? err.response.data : "Something Went Wrong",
       },
     });
     if (err?.response?.data?.statusCode === HttpStatusCode.Unauthorized) {
       logout();
     }
-  }, [logout]);
+  },[logout]);
 
   useLayoutEffect(() => {
     loading();
@@ -96,10 +95,9 @@ function TodoProvider(props: any) {
         });
       })
       .catch((err) => {
-        console.error(err);
         onError(err);
       });
-  },[onError]);
+  }, [onError]);
 
   const deleteTodo = (id: string, options?: IOptions) => {
     loading();
@@ -120,7 +118,6 @@ function TodoProvider(props: any) {
         options && options.onSuccess && options.onSuccess(res);
       })
       .catch((err) => {
-        console.error(err);
         onError(err);
         options && options.onError && options.onError(err?.response);
       });
@@ -143,7 +140,6 @@ function TodoProvider(props: any) {
         options && options.onSuccess && options.onSuccess(res);
       })
       .catch((err) => {
-        console.error(err.response);
         onError(err);
         options && options.onError && options.onError(err?.response);
       });
@@ -155,7 +151,9 @@ function TodoProvider(props: any) {
     axiosInstance
       .patch("todo/update", updateTodo)
       .then((res) => {
-        const index = state.todos.findIndex((todo: any) => todo._id === updateTodo.id);
+        const index = state.todos.findIndex(
+          (todo: any) => todo._id === updateTodo.id
+        );
         state.todos[index] = res.data;
         dispatch({
           type: "UPDATE",
@@ -167,7 +165,6 @@ function TodoProvider(props: any) {
         options && options.onSuccess && options.onSuccess(res);
       })
       .catch((err) => {
-        console.error(err.response);
         onError(err);
         options && options.onError && options.onError(err?.response);
       });

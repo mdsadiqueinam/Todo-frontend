@@ -6,12 +6,14 @@ interface AuthorizationState {
   user: JwtPayload | null;
   login: (userData: { token: string }) => void;
   logout: () => void;
+  loading?: boolean;
 }
 
 const initialState: AuthorizationState = { 
   user: null,
   login: (userData: any) => {},
   logout: () => {},
+  loading: false,
 };
 
 const token = localStorage.getItem(ACCESS_TOKEN);
@@ -36,12 +38,19 @@ function authReducer(
       return {
         ...state,
         user: action.payload.user,
+        loading: action.payload.loading
       };
     case "LOGOUT":
       return {
         ...state,
         user: null,
+        loading: action.payload.loading
       };
+    case "LOADING":
+    return {
+      ...state,
+      loading: action.payload.loading,
+    };
     default:
       return state;
   }
@@ -50,19 +59,26 @@ function authReducer(
 function AuthProvider(props: any) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  const loading = () => {
+    dispatch({ type: "LOADING", payload: { loading: true } });
+  };
+
   const login = (userData: any) => {
-    const token = userData[ACCESS_TOKEN]
+    loading();
+    const token = userData[ACCESS_TOKEN];
     localStorage.setItem(ACCESS_TOKEN, token);
     dispatch({
       type: "LOGIN",
-      payload: { user: jwtDecode(token) },
+      payload: { user: jwtDecode(token), loading: false },
     });
   };
 
   const logout = () => {
+    loading();
     localStorage.removeItem(ACCESS_TOKEN);
     dispatch({
-      type: "LOGOUT"
+      type: "LOGOUT",
+      payload: { loading: false }
     });
   };
 

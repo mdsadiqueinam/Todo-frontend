@@ -83,6 +83,7 @@ export default function Login() {
           type="submit"
           variant="contained"
           className={classes.root}
+          disabled={context.loading}
         >
           Login
         </Button>

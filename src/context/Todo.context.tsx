@@ -1,4 +1,4 @@
-import { createContext, useReducer, useContext, useLayoutEffect } from "react";
+import { createContext, useReducer, useContext, useLayoutEffect, useCallback } from "react";
 import { axiosInstance } from "config/axios.config";
 import { ITodo, ITodoForm, IUpdateTodoForm } from "interface/Todo.interface";
 import { useAuth } from 'context/Auth.context';
@@ -67,7 +67,7 @@ function TodoProvider(props: any) {
     dispatch({ type: "LOADING", payload: { loading: true } });
   };
 
-  function onError(err: any) {
+  const onError = useCallback((err: any) => {
     dispatch({
       type: "ERROR",
       payload: {
@@ -80,7 +80,7 @@ function TodoProvider(props: any) {
     if (err?.response?.data?.statusCode === HttpStatusCode.Unauthorized) {
       logout();
     }
-  }
+  }, [logout]);
 
   useLayoutEffect(() => {
     loading();
@@ -99,7 +99,7 @@ function TodoProvider(props: any) {
         console.error(err);
         onError(err);
       });
-  },[]);
+  },[onError]);
 
   const deleteTodo = (id: string, options?: IOptions) => {
     loading();

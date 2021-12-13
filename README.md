@@ -1,5 +1,8 @@
 # Getting Started with FrontEnd
 
+## [Demo live page](https://todo-sadique.netlify.app/)
+## [Backend Github repo](https://github.com/mdsadiqueinam/Todo-server)
+
 ## Home Page
 
 The Home page contains the 3`tabs` each corresponding `tab` shows the list of corresponding `Open, Closed, Pending` `Todos`

@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect, useContext } from "react";
+import { createContext, useReducer, useContext, useLayoutEffect } from "react";
 import { axiosInstance } from "config/axios.config";
 import { ITodo, ITodoForm, IUpdateTodoForm } from "interface/Todo.interface";
 import { useAuth } from 'context/Auth.context';
@@ -67,7 +67,7 @@ function TodoProvider(props: any) {
     dispatch({ type: "LOADING", payload: { loading: true } });
   };
 
-  const onError = (err: any) => {
+  function onError(err: any) {
     dispatch({
       type: "ERROR",
       payload: {
@@ -82,7 +82,7 @@ function TodoProvider(props: any) {
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     loading();
     axiosInstance
       .get("/todo/view")
@@ -99,7 +99,7 @@ function TodoProvider(props: any) {
         console.error(err);
         onError(err);
       });
-  });
+  },[]);
 
   const deleteTodo = (id: string, options?: IOptions) => {
     loading();
